@@ -22,33 +22,72 @@ export const start = async () => {
   try {
     const db = await MongoClient.connect(MONGO_URL)
 
-    const Posts = db.collection('posts')
-    const Comments = db.collection('comments')
+    const TestBedGroups = db.collection('testbedgroups');
+    const TestBed = db.collection('comments');
+    const TestOrder = db.collection('testorder');
+    const Recipe = db.collection('recipe');
 
     const typeDefs = [`
       type Query {
-        post(_id: String): Post
-        posts: [Post]
-        comment(_id: String): Comment
+        testbed(_id: String): TestBed
+        testbeds: [TestBed]
+        testbedgroup(_id: String): TestBedGroups
+        testbedgroups: [TestBedGroups]
+        testorder(_id: String): TestOrder
+        testorders: [TestOrder]
+        recipe(_id: String): Recipe 
+        recipes: [Recipe]
       }
 
-      type Post {
+      type TestBedGroups {
         _id: String
-        title: String
-        content: String
-        comments: [Comment]
+        name: String
+        description: String
+        testbeds: [TestBed]
       }
 
-      type Comment {
+      type TestBed {
         _id: String
-        postId: String
-        content: String
-        post: Post
+        name: String
+        description: String
+        testorders: [TestOrder]
       }
+      
+      type TestOrder {
+          _id: String
+          name: String
+          description: String
+          testbeds: [TestBed]
+          recipes: [Recipe]
+      }
+      
+      type Recipe {
+          _id: String
+          name: String
+          description: String
+    }
+      
 
       type Mutation {
-        createPost(title: String, content: String): Post
-        createComment(postId: String, content: String): Comment
+        createTestBedGroups(_id: String,
+        name: String,
+        description: String,
+        testbeds: [TestBed]): TestBedGroup
+        
+        createTestBed(_id: String,
+        name: String,
+        description: String,
+        testorders: [TestOrder]): TestBed
+        
+        createTestOrder(_id: String,
+          name: String,
+          description: String,
+          testbeds: [TestBed],
+          recipes: [Recipe]): TestOrder
+        
+        createTestRecipe(_id: String,
+          name: String,
+          description: String)
       }
 
       schema {
